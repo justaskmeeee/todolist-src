@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Для тех, кто решает поставленные задачи">
+  <meta name="keywords" content="список дел, список задач, задачи, todo, туду, todo list, туду лист">
+  <link rel="icon" href="./images/icon.ico">
+  <title>Todo</title>
+<script defer="defer" src="main.bundle.js"></script></head>
+<body>
+  <section class="todo">
+    <div class="todo__container">
+      <div class="header">
+        <h1 class="header__title">todos</h1>
+        <input class="create-todo header__create-todo" placeholder="What need to be done?" autofocus>
+      </div>
+      <div class="main todo__main">
+        <input class="toggle-all main__toggle-all" id="toggle-all" type="checkbox">
+        <label class="toggle-all-icon" for="toggle-all"></label>
+        <ul class="todo-list"></ul>
+      </div>
+      <div class="footer todo__footer">
+        <span class="count"></span>
+        <ul class="filters footer__filters">
+          <li class="filters__item">
+            <a href="/" class="filters__link">All</a>
+          </li>
+          <li class="filters__item">
+            <a href="/active" class="filters__link">Active</a>
+          </li>
+          <li class="filters__item">
+            <a href="/completed" class="filters__link">Completed</a>
+          </li>
+        </ul>
+        <button class="clear-items">Clear completed</button>
+      </div>
+      <p class="todo__help">Double-click to edit a todo</p>
+    </div>
+  </section>
+</body>
+</html>

@@ -1,0 +1,57 @@
+@import './todo.scss';
+
+html, 
+body {
+  margin: 0;
+  background: #c7f9cc;
+}
+
+.main {
+  &__toggle-all {
+    position: absolute;
+    opacity: 0;
+    width: rem(1);
+    height: rem(1);
+  }
+}
+
+.toggle-all-icon {
+  position: absolute;
+  top: rem(-48);
+  left: rem(23);
+  transform: rotate(90deg);
+  opacity: .3;
+
+  @media (max-width: rem(768)) {
+    top: rem(-45);
+  }
+
+  &::after {
+    content: '❯';
+    font-size: rem(25);
+    color: #38a3a5;
+    width: auto;
+    height: auto;
+
+    @media (max-width: rem(768)) {
+      font-size: rem(20);
+    }
+  }
+
+  &_highlighted {
+    opacity: 1;
+  }
+
+  &_off {
+    display: none;
+  }
+}
+
+.completed {
+  text-decoration: line-through;
+  opacity: .5;
+}
+
+.editing {
+  visibility: hidden;
+}
