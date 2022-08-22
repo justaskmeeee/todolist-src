@@ -68,7 +68,7 @@ function createTodoList() {
 
     setTheLimitLength(createTodo, 'todoInput');
 
-    if (event.key === 'Enter' && createTodo.value !== '') {      
+    if (event.key === 'Enter' && createTodo.value.trim() !== '') {      
       todos.push(item);
       localStorage.setItem('todos', JSON.stringify(todos));
 
@@ -414,7 +414,6 @@ function checkTheCompletionOfAllTasks() {
   const eachToggleIsCompleted = todos.every(item => item.completed);
 
   if (eachToggleIsCompleted) {
-    // later mb return this checked true/false
     toggleOfAllTodoItems.checked = true;
     toggleAllIcon.classList.add('toggle-all-icon_highlighted');
   } else {
@@ -491,12 +490,21 @@ function removeSelectedStateOfButtons() {
   })
 }
 
+function getCurrentPathName(path) {
+  const splittedPathName = path.split('/');
+  const historyStatePathName = splittedPathName[splittedPathName.length - 1];
 
-function setCurrentPathFilterLink(state) {
+  return historyStatePathName;
+}
+
+function selectTheCurrentLinkTab(state) {
   const filterButtons = document.getElementsByClassName('filters__link');
 
   [...filterButtons].forEach(filterButton => {
-    if (filterButton.getAttribute('href') === state) {
+    const lastTabOfCurrentPathName = getCurrentPathName(state);
+    const filterButtonLink = getCurrentPathName(filterButton.pathname);
+
+    if (filterButtonLink === lastTabOfCurrentPathName) {
       const currentTodoItem = filterButton.parentElement;
       currentTodoItem.classList.add('filters__item_selected');
     }
@@ -510,10 +518,11 @@ function todoItemsFiltering(state) {
   
   if (!state) return;
 
-  // set .selected class for filted link (onload)
-  setCurrentPathFilterLink(state.page);
+  const splittedHistoryState = state.page.split('/');
+  const removedLastTab = splittedHistoryState.pop();
+  const lastTabOfHistoryState = `/${removedLastTab}`;
 
-  switch (state.page) {
+  switch (lastTabOfHistoryState) {
     case '/':
       hiddenTodoItems.forEach(hiddenItem => hiddenItem.classList.remove('list-item_hide'));
 
@@ -564,9 +573,15 @@ function routeHandling() {
     if (containsFilterLink) {
       event.preventDefault();
       const filterLink = event.target;
+      
+      const splittedCurrentWindowHref = window.location.href.split('/');
+      const lastTabOfCurrentWindowHref = splittedCurrentWindowHref.pop();
+      const currentWindowHrefWithoutLastTab = splittedCurrentWindowHref.join('/');
+
       const state = {
-        page: filterLink.getAttribute('href'),
-      };
+        page: `${currentWindowHrefWithoutLastTab}${filterLink.pathname}`,
+      }
+
       const filterItemButton = filterLink.parentElement; 
       
       removeSelectedStateOfButtons();
@@ -579,8 +594,10 @@ function routeHandling() {
 }
 
 window.addEventListener('load', () => {
-  routeHandling();
+  const currentPathName = getCurrentPathName(window.location.pathname);
+  selectTheCurrentLinkTab(currentPathName);
   todoItemsFiltering(history.state);
+  routeHandling();
 });
 
 window.addEventListener('popstate', (event) => {

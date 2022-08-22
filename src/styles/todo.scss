@@ -103,7 +103,7 @@
   &__toggle {
     position: absolute;
     left: rem(11);
-    
+
     @media (max-width: rem(768)) {
       left: rem(16);
     }
@@ -348,6 +348,18 @@
   }
 }
 
+@keyframes makeVisible {
+  from {
+    opacity: .3;
+    border-color: #38a3a5;
+  } 
+
+  to {
+    opacity: 1;
+    border-color: #38a3a5;
+  }
+}
+
 .toggle {
   width: rem(35);
   height: rem(35);
@@ -363,12 +375,30 @@
   }
 }
 
+.toggle:not(:checked) {
+  @media (min-width: rem(769)) {
+    &:hover {
+      cursor: pointer;
+      opacity: 1;
+      border-color: #38a3a5;
+      animation: ease .3s makeVisible;
+    }
+  }
+}
+
 .toggle:checked {
   background: url('/src/images/check.svg') no-repeat;
   background-size: rem(20);
   background-position: center;
   opacity: 1;
+  animation: ease-in .2s makeColorful;
 
+  @media (min-width: rem(769)) {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  
   @media (max-width: rem(768)) {
     background-size: rem(15);
   }
