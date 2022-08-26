@@ -1,3 +1,5 @@
+import { maxLength } from './globalVariables';
+
 let todos = JSON.parse(localStorage.getItem('todos')) || [];
 
 function createTodoItem(value, itemId) {
@@ -13,8 +15,6 @@ function createTodoItem(value, itemId) {
 }
 
 function setTheLimitLength(text, element) {
-  const maxLength = 150;
-
   switch (element) {
     case 'todoInput': 
       if (text.value.length > maxLength) {
@@ -77,8 +77,6 @@ function createTodoList() {
       clearCreateTodoValue(createTodo);
       countTodoItems(getCountOfTodos());
       checkTheCompletionOfAllTasks();
-      // setDisplayOfClearCompletedButton();
-      // Без вызова этой функции, при добавлении нового элемента на вкладке /completed, автоматические не фильтруется (т.е. активный айтем отображается вместе с выполненными задачами)
       todoItemsFiltering(history.state);
       filterPanelVisibilityControl(todos.length);
     }
@@ -92,11 +90,7 @@ function getCountOfTodos() {
 function countTodoItems(items) {
   const count = document.querySelector('.count');
 
-  if (items > 1 || items === 0) {
-    count.textContent = `${items} items left`;
-  } else {
-    count.textContent = `${items} item left`;
-  }
+  count.textContent = items > 1 || items === 0 ? `${items} items left` : `${items} item left`;
 } 
 
 function removeCountOfTodoItems(count) {
@@ -118,14 +112,12 @@ function removeTodoItem() {
     const currentTodoItemButton = todos.find(item => item.id === todoItemId);
     const buttonPressedIndex = todos.indexOf(currentTodoItemButton);
 
-    // - 1
     if (buttonPressedIndex !== - 1) {
       todos.splice(buttonPressedIndex, 1);
       localStorage.setItem('todos', JSON.stringify(todos));
     }
     
     const countOfActiveTodos = getCountOfTodos();
-    // fix считает на 1 элемент больше чем в массиве
     const countOfAllTodos = todos.length;
 
     removeTodoButton.parentElement.remove();
@@ -135,6 +127,32 @@ function removeTodoItem() {
     setDisplayOfClearCompletedButton();
     filterPanelVisibilityControl(todos.length);
   })
+}
+
+function changeTheProgressStatusOfTodoItem(clickedItemId, status) {
+  const todoItemIsCompleted = status;
+  const changeStatusToCompleted = () => {
+    todos.map(item => {
+      if (item.id === clickedItemId) {
+        item.completed = status;
+      }
+    })
+  }
+    
+  const changeStatusToIncomplete = () => {
+    todos.map(item => {
+      if (item.id === clickedItemId) {
+        item.completed = status;
+      }
+    })
+  }
+
+  todoItemIsCompleted ? changeStatusToCompleted() : changeStatusToIncomplete();
+}
+
+function todoItemCompletionCheck(clickedItemId, itemText, isChecked) {
+  changeTheProgressStatusOfTodoItem(clickedItemId, isChecked);
+  isChecked ? itemText.classList.add('completed') : itemText.classList.remove('completed');
 }
 
 function todoItemStatusTracking() {
@@ -148,23 +166,12 @@ function todoItemStatusTracking() {
     const todoItem = toggle.parentElement;
     const todoItemText = todoItem.querySelector('.list-item__text');
     const todoItemId = todoItem.dataset.id;
-    const numberOfOutstandingTasks = todos.filter(todo => !todo.completed).length;
 
-    if (toggle.checked) {
-      changeStatusToCompleted(todos, todoItemId);
-      localStorage.setItem('todos', JSON.stringify(todos));
-      todoItemText.classList.add('completed');
-      countTodoItems(numberOfOutstandingTasks - 1);
-      todoItemsFiltering(history.state);
-      setDisplayOfClearCompletedButton();
-    } else {
-      changeStatusToIncomplete(todos, todoItemId);
-      localStorage.setItem('todos', JSON.stringify(todos));
-      todoItemText.classList.remove('completed');
-      countTodoItems(numberOfOutstandingTasks + 1);
-      todoItemsFiltering(history.state);
-      setDisplayOfClearCompletedButton();
-    }
+    todoItemCompletionCheck(todoItemId, todoItemText, toggle.checked);
+    countTodoItems(getCountOfTodos());
+    todoItemsFiltering(history.state);
+    localStorage.setItem('todos', JSON.stringify(todos));
+    setDisplayOfClearCompletedButton();
   })
 }
 
@@ -185,22 +192,6 @@ function makeTodoItemsChecked() {
   }
 }
 
-function changeStatusToCompleted(todos, clickedItemId) {
-  todos.map(item => {
-    if (item.id === clickedItemId) {
-      item.completed = true;
-    }
-  })
-}
-
-function changeStatusToIncomplete(todos, clickedItemId) {
-  todos.map(item => {
-    if (item.id === clickedItemId) {
-      item.completed = false;
-    }
-  })
-}
-
 function toggleAllTodoItems() {
   const mainToggle = document.querySelector('.toggle-all');
   const switches = document.getElementsByClassName('toggle');
@@ -210,19 +201,12 @@ function toggleAllTodoItems() {
       const todoItem = toggle.parentElement;
       const todoItemText = todoItem.querySelector('.list-item__text');
       
+      toggle.checked = mainToggle.checked;
+      mainToggle.checked ? todoItemText.classList.add('completed') : todoItemText.classList.remove('completed');
       todos.forEach(item => {
-        if (mainToggle.checked) {
-          toggle.checked = true;
-          todoItemText.classList.add('completed');
-          item.completed = toggle.checked;
-          todoItemsFiltering(history.state);
-        } else {
-          toggle.checked = false;
-          todoItemText.classList.remove('completed');
-          item.completed = toggle.checked;
-          todoItemsFiltering(history.state);
-        }
-      })
+        item.completed = toggle.checked;
+      });
+      todoItemsFiltering(history.state);
     }
 
     checkTheCompletionOfAllTasks();
@@ -230,10 +214,6 @@ function toggleAllTodoItems() {
     countTodoItems(getCountOfTodos());
     localStorage.setItem('todos', JSON.stringify(todos));
   })
-}
-
-function getTextOfTodos() {
-  return document.getElementsByClassName('list-item__text');
 }
 
 function editTodo() {
@@ -251,8 +231,7 @@ function editTodo() {
     edit.value = todoItemText.innerText;
     edit.focus();
     setVisibilityOfRemoveTodoItemButton(todoItem, true);
-    // remove this later
-    hideToggle(todoItem, true);
+    visibilityControlOfToggle(todoItem, true);
     removeCompletedStatus(todoItemText, true);
   })
 }
@@ -322,7 +301,7 @@ function applyEditing() {
 
       removeEmptyTodoItem(todoItemText);
       setVisibilityOfRemoveTodoItemButton(todoItem, false);
-      showToggle(todoItem);
+      visibilityControlOfToggle(todoItem, false);
       addCompletedStatus(todoItem, todoItemText);
       setTheLimitLength(todoItemText, 'todoItem');
 
@@ -353,7 +332,7 @@ function cancelEditing() {
             const changeTodoItemStorageText = changeTodoItemTextInStorage.bind(todoItem);
             changeTodoItemStorageText();
             setVisibilityOfRemoveTodoItemButton(todoItem, false);
-            showToggle(todoItem);
+            visibilityControlOfToggle(todoItem, false);
             addCompletedStatus(todoItem, todoItemText);
 
             localStorage.setItem('todos', JSON.stringify(todos));
@@ -370,7 +349,7 @@ function cancelEditing() {
             todoItemText.innerText = currentNotChangedLocalStorageTodoItem.text;
             
             setVisibilityOfRemoveTodoItemButton(todoItem, false);
-            showToggle(todoItem);
+            visibilityControlOfToggle(todoItem, false);
             addCompletedStatus(todoItem, todoItemText);            
           }
       }
@@ -378,20 +357,18 @@ function cancelEditing() {
   })
 }
 
-function hideToggle(todoItem, editing) {
+function visibilityControlOfToggle(todoItem, editing) {
   const toggle = todoItem.querySelector('.toggle');
 
-  if (editing) {
-    toggle.classList.add('editing');  
+  const hideToggle = () => {
+    toggle.classList.add('editing');
   }
-}
 
-function showToggle(todoItem) {
-  const toggle = todoItem.querySelector('.toggle');
-
-  if (toggle.classList.contains('editing')) {
+  const showToggle = () => {
     toggle.classList.remove('editing');
   }
+
+  editing ? hideToggle() : showToggle();
 }
 
 function removeCompletedStatus(todoText, editing) {
@@ -588,6 +565,7 @@ function routeHandling() {
       filterItemButton.classList.add('filters__item_selected');
 
       history.pushState(state, null, state.page);
+      console.log(state);
       todoItemsFiltering(state);
     }
   })
