@@ -2,11 +2,11 @@
 @import './fonts.scss';
 
 .todo {
-  font-family: 'Roboto', sans-serif;
-  min-width: rem(320);
-  width: 100%;
   display: flex;
   justify-content: center;
+  width: 100%;
+  min-width: rem(320);
+  font-family: 'Roboto', sans-serif;
 
   &__container {
     width: 100%;
@@ -37,10 +37,10 @@
   &__title {
     margin: 0;
     margin-bottom: rem(15);
-    font-family: 'Mouse Memoirs', sans-serif;
-    font-size: rem(100);
     text-align: center;
     text-shadow: rem(6) rem(3) #57cc99;
+    font-family: 'Mouse Memoirs', sans-serif;
+    font-size: rem(100);
     color: #80ed99;
   }
 
@@ -52,20 +52,20 @@
 .create-todo {
   width: calc(100% - 80px);
   height: rem(20);
-  font-size: rem(25);
   border: none;
-  outline: none;
-  color: #22577a;
   border-bottom: rem(2) solid #c7f9cc;
+  outline: none;
+  font-size: rem(25);
+  color: #22577a;
 
   @media (max-width: rem(480)) {
     font-size: rem(20);
   }
 
   &::placeholder {
+    opacity: .3;
     font-size: rem(25);
     color: #38a3a5;
-    opacity: .3;
   
     @media (max-width: rem(480)) {
       font-size: rem(20);
@@ -94,11 +94,11 @@
 
 .list-item {
   width: 100%;
-  font-size: rem(20);
-  color: #22577a;
   border: none;
   border-bottom: rem(2) solid #c7f9cc;
   list-style: none;  
+  font-size: rem(20);
+  color: #22577a;
   
   &__toggle {
     position: absolute;
@@ -132,47 +132,27 @@
       font-size: rem(18);
     }
 
-    @media (min-width: rem(566)) and (max-width: rem(768)) {
-      width: 81%;
+    @media (min-width: rem(541)) and (max-width: rem(768)) {
+      width: calc(85% - 15px);
     }
 
-    @media (min-width: rem(481)) and (max-width: rem(565)) {
-      width: 79%;
+    @media (min-width: rem(421)) and (max-width: rem(540)) {
+      width: calc(85% - 35px);
     }
 
-    @media (min-width: rem(461)) and (max-width: rem(480)) {
-      width: 78%;
-    }
-
-    @media (min-width: rem(441)) and (max-width: rem(460)) {
-      width: 77%;
-    }
-
-    @media (min-width: rem(421)) and (max-width: rem(440)) {
-      width: 76%;
-    }
-
-    @media (min-width: rem(401)) and (max-width: rem(420)) {
-      width: 75%;
-    }
-
-    @media (min-width: rem(381)) and (max-width: rem(400)) {
-      width: 73%;
-    }
-
-    @media (min-width: rem(361)) and (max-width: rem(380)) {
-      width: 72%;
+    @media (min-width: rem(361)) and (max-width: rem(420)) {
+      width: calc(85% - 45px);
     }
 
     @media (max-width: rem(360)) {
-      width: 68%;
+      width: calc(85% - 55px);
     }
   }
 
   &__text[contenteditable]:focus {
+    width: 100%;
     outline: none;
     box-shadow: 0 0 rem(10) #22577a;
-    width: 100%;
   }
 
   &_hide {
@@ -185,18 +165,18 @@
 }
 
 .done {
-  background: url('/src/images/check.svg') no-repeat;
   width: rem(20);
   height: rem(20);
+  background: url('/src/images/check.svg') no-repeat;
 }
 
 .remove {
   display: inline-block;
   width: rem(14);
   height: rem(14);
+  border: none;
   background: url('/src/images/cancel.png') no-repeat;
   background-size: contain;
-  border: none;
   
   @media (min-width: rem(769)) {
     display: none;
@@ -212,9 +192,9 @@
     display: inline-block;
     width: rem(25);
     height: rem(25);
-    background: url('/src/images/cancel.png') no-repeat;
     border: none;
     opacity: .5;
+    background: url('/src/images/cancel.png') no-repeat;
     cursor: pointer;
   }
 }
@@ -238,8 +218,8 @@
 }
 
 .footer {
-  background: #ffffff;
   height: 40px;
+  background: #ffffff;
 
   &__filters {
     display: flex;
@@ -254,10 +234,10 @@
 }
 
 .filters {
-  padding: 0;
-  margin: 0;
   height: auto;
   max-height: rem(40);
+  padding: 0;
+  margin: 0;
 
   &__item {
     padding: rem(2) rem(2);
@@ -275,16 +255,16 @@
   }
 
   &__item_selected {
-    cursor: pointer;
-    pointer-events: none;
     border: 1px solid #57cc99;
+    pointer-events: none;
+    cursor: pointer;
   }
 
   &__link {
-    color: #707070;
-    text-decoration: none;
-    -webkit-tap-highlight-color: transparent;
     padding: 0 rem(10);
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+    color: #707070;
   
     @media (min-width: rem(361)) and (max-width: rem(768)) {
       font-size: rem(14);
@@ -319,13 +299,13 @@
 }
 
 .clear-items {
-  cursor: pointer;
-  background: none;
-  border: none;
   padding: 0;
+  border: none;
   font-family: 'Roboto', sans-serif; 
   font-size: rem(16);
   color: #707070;
+  background: none;
+  cursor: pointer;
 
   @media (min-width: rem(481)) and (max-width: rem(768)) {
     font-size: rem(14);
@@ -363,44 +343,44 @@
 .toggle {
   width: rem(35);
   height: rem(35);
-  border-radius: 50%;
+  margin: 0;
   border: 2px solid #38a3a5;
+  border-radius: 50%;
   appearance: none;
   opacity: .3;
-  margin: 0;
 
   @media (max-width: rem(768)) {
     width: rem(25);
     height: rem(25);
   }
-}
 
-.toggle:not(:checked) {
-  @media (min-width: rem(769)) {
-    &:hover {
-      cursor: pointer;
-      opacity: 1;
-      border-color: #38a3a5;
-      animation: ease .3s makeVisible;
+  &:not(:checked) {
+    @media (min-width: rem(769)) {
+      &:hover {
+        opacity: 1;
+        animation: ease .3s makeVisible;
+        border-color: #38a3a5;
+        cursor: pointer;
+      }
     }
   }
-}
 
-.toggle:checked {
-  background: url('/src/images/check.svg') no-repeat;
-  background-size: rem(20);
-  background-position: center;
-  opacity: 1;
-  animation: ease-in .2s makeColorful;
+  &:checked {
+    opacity: 1;
+    animation: ease-in .2s makeColorful;
+    background: url('/src/images/check.svg') no-repeat;
+    background-size: rem(20);
+    background-position: center;
 
-  @media (min-width: rem(769)) {
-    &:hover {
-      cursor: pointer;
+    @media (min-width: rem(769)) {
+      &:hover {
+        cursor: pointer;
+      }
     }
-  }
   
-  @media (max-width: rem(768)) {
-    background-size: rem(15);
+    @media (max-width: rem(768)) {
+      background-size: rem(15);
+    }
   }
 }
 
@@ -411,10 +391,10 @@
   min-height: rem(40);
   padding: rem(10);
   margin-left: rem(50);
+  border: 1px solid #38a3a5;
+  outline: none;
   font-size: rem(20);
   color: #22577a;
-  outline: none;
-  border: 1px solid #38a3a5;
   box-shadow: 0 0 5px #38a3a5;
 
   @media (max-width: rem(768)) {

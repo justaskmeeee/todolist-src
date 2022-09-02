@@ -9,9 +9,9 @@ body {
 .main {
   &__toggle-all {
     position: absolute;
-    opacity: 0;
     width: rem(1);
     height: rem(1);
+    opacity: 0;
   }
 }
 
@@ -28,10 +28,10 @@ body {
 
   &::after {
     content: '❯';
-    font-size: rem(25);
-    color: #38a3a5;
     width: auto;
     height: auto;
+    font-size: rem(25);
+    color: #38a3a5;
 
     @media (max-width: rem(768)) {
       font-size: rem(20);

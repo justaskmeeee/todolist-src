@@ -1,4 +1,4 @@
-import { maxLength } from './globalVariables';
+import { INPUT_MAX_LENGTH } from './globalVariables';
 
 let todos = JSON.parse(localStorage.getItem('todos')) || [];
 
@@ -17,14 +17,14 @@ function createTodoItem(value, itemId) {
 function setTheLimitLength(text, element) {
   switch (element) {
     case 'todoInput': 
-      if (text.value.length > maxLength) {
-        text.value = text.value.slice(0, maxLength);
+      if (text.value.length > INPUT_MAX_LENGTH) {
+        text.value = text.value.slice(0, INPUT_MAX_LENGTH);
       };
       
       break;
     case 'todoItem': 
-      if (text.innerText.length > maxLength) {
-        text.innerText = text.innerText.slice(0, maxLength);
+      if (text.innerText.length > INPUT_MAX_LENGTH) {
+        text.innerText = text.innerText.slice(0, INPUT_MAX_LENGTH);
       };
 
       break;
@@ -56,28 +56,35 @@ function generateId() {
 function createTodoList() {
   const createTodo = document.querySelector('.create-todo');
   todos.forEach(item => appendTodoItemToList(item.text, item.id));  
-
+  
   createTodo.addEventListener('keyup', (event) => {
     const createTodoValue = getCreateTodo().value;
-
+    
     const item = {
       text: createTodoValue,
       completed: false,
       id: generateId(),
     };
-
+    
     setTheLimitLength(createTodo, 'todoInput');
-
+    
     if (event.key === 'Enter' && createTodo.value.trim() !== '') {      
       todos.push(item);
       localStorage.setItem('todos', JSON.stringify(todos));
-
+      
       appendTodoItemToList(item.text, item.id);
+      
+      const lastTabOfHistoryState = `/${history.state.page.split('/').pop()}`;
+
+      if (lastTabOfHistoryState === '/completed') {
+        const newTodoItem = document.querySelector(`[data-id='${item.id}']`);
+        newTodoItem.classList.add('list-item_hide');
+      }; 
+
       changeVisibilityStateOfToggleAll();      
       clearCreateTodoValue(createTodo);
       countTodoItems(getCountOfTodos());
       checkTheCompletionOfAllTasks();
-      todoItemsFiltering(history.state);
       filterPanelVisibilityControl(todos.length);
     }
   });
@@ -131,23 +138,11 @@ function removeTodoItem() {
 
 function changeTheProgressStatusOfTodoItem(clickedItemId, status) {
   const todoItemIsCompleted = status;
-  const changeStatusToCompleted = () => {
-    todos.map(item => {
-      if (item.id === clickedItemId) {
-        item.completed = status;
-      }
-    })
-  }
-    
-  const changeStatusToIncomplete = () => {
-    todos.map(item => {
-      if (item.id === clickedItemId) {
-        item.completed = status;
-      }
-    })
-  }
-
-  todoItemIsCompleted ? changeStatusToCompleted() : changeStatusToIncomplete();
+  todos.find(item => {
+    if (item.id === clickedItemId) {
+      item.completed = todoItemIsCompleted;
+    }
+  })
 }
 
 function todoItemCompletionCheck(clickedItemId, itemText, isChecked) {
@@ -239,15 +234,7 @@ function editTodo() {
 function setVisibilityOfRemoveTodoItemButton(currentTodoItem, editing) {
   const removeButton = currentTodoItem.querySelector('.remove');
 
-  const hideRemoveButton = () => {
-    removeButton.classList.add('remove_editing');
-  }
-
-  const showRemoveButton = () => {
-    removeButton.classList.remove('remove_editing');
-  }
-
-  editing ? hideRemoveButton() : showRemoveButton();
+  editing ? removeButton.classList.add('remove_editing') : removeButton.classList.remove('remove_editing');
 }
 
 function changeTodoItemTextInStorage() {  
@@ -360,15 +347,7 @@ function cancelEditing() {
 function visibilityControlOfToggle(todoItem, editing) {
   const toggle = todoItem.querySelector('.toggle');
 
-  const hideToggle = () => {
-    toggle.classList.add('editing');
-  }
-
-  const showToggle = () => {
-    toggle.classList.remove('editing');
-  }
-
-  editing ? hideToggle() : showToggle();
+  editing ? toggle.classList.add('editing') : toggle.classList.remove('editing');
 }
 
 function removeCompletedStatus(todoText, editing) {
@@ -390,13 +369,8 @@ function checkTheCompletionOfAllTasks() {
   const toggleAllIcon = document.querySelector('.toggle-all-icon');
   const eachToggleIsCompleted = todos.every(item => item.completed);
 
-  if (eachToggleIsCompleted) {
-    toggleOfAllTodoItems.checked = true;
-    toggleAllIcon.classList.add('toggle-all-icon_highlighted');
-  } else {
-    toggleOfAllTodoItems.checked = false;
-    toggleAllIcon.classList.remove('toggle-all-icon_highlighted');
-  }
+  toggleOfAllTodoItems.checked = eachToggleIsCompleted;
+  toggleOfAllTodoItems.checked ? toggleAllIcon.classList.add('toggle-all-icon_highlighted') : toggleAllIcon.classList.remove('toggle-all-icon_highlighted');
 }
 
 function resetToggleOfAllTodoItems() {
@@ -410,20 +384,14 @@ function resetToggleOfAllTodoItems() {
 function filterPanelVisibilityControl(numberOfTasks) {
   const filterPanel = document.querySelector('.footer');
 
-  const show = () => filterPanel.classList.remove('footer_completed');
-  const hide = () => filterPanel.classList.add('footer_completed');
-
-  numberOfTasks >= 1 ? show() : hide();
+  numberOfTasks >= 1 ? filterPanel.classList.remove('footer_completed') : filterPanel.classList.add('footer_completed');
 }
 
 function setDisplayOfClearCompletedButton() {
   const clearCompletedButton = document.querySelector('.clear-items');
   const allTodoItemsIsCompleted = todos.some(item => item.completed);
 
-  const showClearCompletedButton = () => clearCompletedButton.classList.remove('clear-items_removed'); 
-  const hideClearCompletedButton = () => clearCompletedButton.classList.add('clear-items_removed');
-
-  allTodoItemsIsCompleted ? showClearCompletedButton() : hideClearCompletedButton();
+  allTodoItemsIsCompleted ? clearCompletedButton.classList.remove('clear-items_removed') : clearCompletedButton.classList.add('clear-items_removed');
 }
 
 function clearCompleted() {
@@ -565,7 +533,6 @@ function routeHandling() {
       filterItemButton.classList.add('filters__item_selected');
 
       history.pushState(state, null, state.page);
-      console.log(state);
       todoItemsFiltering(state);
     }
   })
