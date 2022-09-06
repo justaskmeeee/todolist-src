@@ -491,6 +491,7 @@ function todoItemsFiltering(state) {
 
       break;
     case '/active':
+      appendTodoItemsCreatedOnTheCompledTabToList(todoList, todoItems);
       const completedTodoItems = todoItemsText.filter(completedItem => completedItem.classList.contains('completed'));
 
       hiddenTodoItems.forEach(hiddenTodoItem => {
@@ -509,7 +510,6 @@ function todoItemsFiltering(state) {
       
       break;
     case '/completed':  
-      appendTodoItemsCreatedOnTheCompledTabToList(todoList, todoItems);
       const activeTodoItems = todoItemsText.filter(activeItem => !activeItem.classList.contains('completed'));  
 
       hiddenTodoItems.forEach(hiddenTodoItem => {
