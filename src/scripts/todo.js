@@ -71,15 +71,12 @@ function createTodoList() {
     if (event.key === 'Enter' && createTodo.value.trim() !== '') {      
       todos.push(item);
       localStorage.setItem('todos', JSON.stringify(todos));
-      
-      appendTodoItemToList(item.text, item.id);
-      
+  
       const lastTabOfHistoryState = `/${history.state.page.split('/').pop()}`;
 
-      if (lastTabOfHistoryState === '/completed') {
-        const newTodoItem = document.querySelector(`[data-id='${item.id}']`);
-        newTodoItem.classList.add('list-item_hide');
-      }; 
+      if (lastTabOfHistoryState !== '/completed') {
+        appendTodoItemToList(item.text, item.id);
+      }
 
       changeVisibilityStateOfToggleAll();      
       clearCreateTodoValue(createTodo);
@@ -456,11 +453,31 @@ function selectTheCurrentLinkTab(state) {
   })
 }
 
+function appendTodoItemsCreatedOnTheCompledTabToList(todoList, todoItems) {
+  const idsOfAddedTodoItems = []; 
+  todoItems.forEach(item => idsOfAddedTodoItems.push(item.getAttribute('data-id')));
+
+  const todoItemsCreatedOnTheCompletedTab = todos.filter(todo => {
+    return !idsOfAddedTodoItems.includes(todo.id);
+  });
+
+  const allTodoItemsIsAdded = todos.every(todo => {
+    return idsOfAddedTodoItems.includes(todo.id);
+  });
+
+  if (!allTodoItemsIsAdded) {
+    todoItemsCreatedOnTheCompletedTab.forEach(item => {
+      todoList.insertAdjacentHTML('afterbegin', createTodoItem(item.text, item.id));
+    });
+  } 
+}
+
 function todoItemsFiltering(state) {
+  const todoList = document.querySelector('.todo-list');
   const todoItems = [...document.getElementsByClassName('list-item')];
   const todoItemsText = [...document.getElementsByClassName('list-item__text')];
   const hiddenTodoItems = todoItems.filter(hiddenItem => hiddenItem.classList.contains('list-item_hide'));
-  
+
   if (!state) return;
 
   const splittedHistoryState = state.page.split('/');
@@ -469,6 +486,7 @@ function todoItemsFiltering(state) {
 
   switch (lastTabOfHistoryState) {
     case '/':
+      appendTodoItemsCreatedOnTheCompledTabToList(todoList, todoItems);
       hiddenTodoItems.forEach(hiddenItem => hiddenItem.classList.remove('list-item_hide'));
 
       break;
@@ -490,7 +508,8 @@ function todoItemsFiltering(state) {
       });
       
       break;
-    case '/completed':
+    case '/completed':  
+      appendTodoItemsCreatedOnTheCompledTabToList(todoList, todoItems);
       const activeTodoItems = todoItemsText.filter(activeItem => !activeItem.classList.contains('completed'));  
 
       hiddenTodoItems.forEach(hiddenTodoItem => {
