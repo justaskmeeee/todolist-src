@@ -121,31 +121,17 @@
   &__text {
     display: flex;
     align-items: center;
-    width: 85%;
+    width: 100%;
     min-height: rem(40);
     padding: rem(10);
+    padding-right: rem(45);
     margin-left: rem(50);
     user-select: none;
     word-break: break-all;
 
     @media (max-width: rem(768)) {
       font-size: rem(18);
-    }
-
-    @media (min-width: rem(541)) and (max-width: rem(768)) {
-      width: calc(85% - 15px);
-    }
-
-    @media (min-width: rem(421)) and (max-width: rem(540)) {
-      width: calc(85% - 35px);
-    }
-
-    @media (min-width: rem(361)) and (max-width: rem(420)) {
-      width: calc(85% - 45px);
-    }
-
-    @media (max-width: rem(360)) {
-      width: calc(85% - 55px);
+      padding-right: rem(40);
     }
   }
 
